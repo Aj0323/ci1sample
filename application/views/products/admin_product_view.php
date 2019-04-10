@@ -14,8 +14,10 @@
     <br>
     
     <div class="product-description">
-      <p><?php echo $products['description'] ?></p>
-       <a href="<?php echo base_url('products/insert_cart/'.$products['id']); ?>"><div><button class="btn btn-success btn-block">Add to cart</button></div></a>
+      <p><?php echo $products['description'] ?></p> <br>
+       <a href="<?php echo base_url('products/edit_product/'.$products['id']); ?>"><div><button class="btn btn-primary btn-block">EDIT</button></div></a>
+       <br>
+       <a href="<?php echo base_url('products/delete/'.$products['id']); ?>"><div><button class="btn btn-danger btn-block">DELETE</button></div></a>
     </div>
   </section>
   

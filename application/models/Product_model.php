@@ -21,7 +21,6 @@ class Product_model extends CI_Model{
 	public function create_product($product_image){
 		$data = array(
 
-			'user_id' => $this->session->userdata('user_id'),
 			'product_name' => $this->input->post('product_name'),
 			'price' => $this->input->post('price'),
 			'quantity' => $this->input->post('quantity'),
@@ -49,6 +48,16 @@ class Product_model extends CI_Model{
 
 	}
 
+		public function fetch_product($id = FALSE){
+			if($id === FALSE){
+				$this->db->order_by('products.id','ASC');
+				$query = $this->db->get('products');
+				return $query->result_array();
+			}
+			$query = $this->db->get_where('products', array('id' => $id));
+			return $query->row_array();
+		}
+
 
 		public function fetch_cart($id = FALSE){
 		/*	$data = array(
@@ -73,12 +82,29 @@ class Product_model extends CI_Model{
 			
 		}
 
-	?/*	public function place_product(){
+	/*	public function place_product(){
 			$cart_id = $this->db->order_by('cart.id');
 			$query = $this->db->get_where('cart', array('id' => $id));
 			$cart_id = $query->row_array();
 
 			return $this->db->update('cart', $data);
 		} */
+		public function update_product(){
+			$item = $this->input->post('product_name');
 
+			$data = array(
+				'product_name' => $this->input->post('product_name'),
+				'price' => $this->input->post('price'),
+				'quantity' => $this->input->post('quantity'),
+				'description' => $this->input->post('description')
+			);
+			$this->db->where('id', $this->input->post('id'));
+			return $this->db->update('products', $data);
+		}
+
+		public function delete_product($id){
+			$this->db->where('id', $id);
+			$this->db->delete('products');
+			return true;
+		}
 	}	

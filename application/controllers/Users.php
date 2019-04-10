@@ -75,9 +75,64 @@
 
 		  			redirect('users/login');
 
+		  		}
+		  	}
+
+		 } 
+
+		 	public function admin_login(){
+			$data['title'] = 'Admin Authentication';
+
+		  	$this->form_validation->set_rules('username', 'Username', 'required');
+			$this->form_validation->set_rules('password', 'Password', 'required');
+			
+
+		  	if($this->form_validation->run() === FALSE){
+		  		$this->load->view('templates/admin_header');
+		  		$this->load->view('admin/login', $data);
+		  		$this->load->view('templates/admin_footer');
+		  	} else {
+
+		  		//pagkuha ng username
+		  		$username = $this->input->post('username');
+		  		//pagkuha ng password
+		  		$password = md5($this->input->post('password'));
+
+		  		//pag login ng user
+		  		$admin_id = $this->user_model->admin_login($username, $password);
+
+		  		if($admin_id){
+		  			// pag gawa ng session
+		  			$admin_data = array(
+		  				'admin_id' => $admin_id,
+		  				'username' => $username,
+		  				'logged_in' => true
+		  			);
+
+		  			$this->session->set_userdata($admin_data);
+		  			//pag set ng message
+		  			$this->session->set_flashdata('user_loggedin', 'You are now Logged in.');
+
+		  			redirect('users/admin_home');
+
+		  			} else {
+
+		  			//pag set ng message
+		  			$this->session->set_flashdata('login_failed', 'Invalid username or password.');
+
+		  			redirect('users/admin_login');
+
 		  			}
 		  		}
 
+		  	}
+
+		  	public function admin_home(){
+		  		$data['title'] = 'Home';
+
+		  		$this->load->view('templates/admin_header');
+		  		$this->load->view('admin/home', $data);
+		  		$this->load->view('templates/admin_footer');
 		  	}
 
 
@@ -93,6 +148,18 @@
 		  			$this->session->set_flashdata('user_loggedout', 'You are now Logged out.');
 		  			$this->session->sess_destroy();
 		  			redirect('users/login');
+		  		}
+
+		  		public function admin_logout(){
+		  			$this->session->unset_userdata('logged_in');
+		  			$this->session->unset_userdata('admin_id');
+		  			$this->session->unset_userdata('username');
+
+		  			//pag set ng message
+
+		  			$this->session->set_flashdata('user_loggedout', 'You are now Logged out.');
+		  			$this->session->sess_destroy();
+		  			redirect('users/admin_login');
 		  		}
 
 		  	function check_username_exists($username){

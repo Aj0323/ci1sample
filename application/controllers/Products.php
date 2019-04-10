@@ -25,9 +25,9 @@ class Products extends CI_Controller{
 		if($this->form_validation->run() === FALSE){
 
 
-		$this->load->view('templates/header');
+		$this->load->view('templates/admin_header');
 		$this->load->view('products/create', $data);
-		$this->load->view('templates/footer');
+		$this->load->view('templates/admin_footer');
 
 		} else {
 			//dito ang image upload
@@ -70,6 +70,32 @@ class Products extends CI_Controller{
 			$this->load->view('templates/footer');	
 	}
 
+	public function admin_view(){
+
+		$data['title'] ='Products';
+		
+		$data['products'] = $this->product_model->get_product();
+	
+			$this->load->view('templates/admin_header');
+			$this->load->view('products/admin_view', $data);
+			$this->load->view('templates/admin_footer');	
+	}
+
+	public function admin_product_view($id = null){
+
+	
+		$data['products'] = $this->product_model->fetch_products($id);
+
+		if(empty($data['products'])){
+				show_404();
+			}
+
+	
+			$this->load->view('templates/admin_header');
+			$this->load->view('products/admin_product_view', $data);
+			$this->load->view('templates/footer');	
+	}
+
 
 	public function insert_cart($product_id = null, $product_name = null, $product_price = null){
 
@@ -102,7 +128,56 @@ class Products extends CI_Controller{
 			);
 		}
 	} */
-}
+	public function edit_product($products){
+
+		if(!$this->session->userdata('logged_in')){
+				redirect('admin/login');
+			}
+
+			$data['products'] = $this->product_model->fetch_product($products);
+			if($this->session->userdata('user_id')){
+				redirect('products');
+			}
+
+
+			$data['title'] = 'Edit Product';
+
+			$this->load->view('templates/admin_header');
+			$this->load->view('products/edit', $data);
+			$this->load->view('templates/admin_footer');
+	}
+
+	public function product_update(){
+		if(!$this->session->userdata('logged_in')){
+				die('UNAUTHORIZE ACCESS');
+			}
+		$this->product_model->update_product();
+
+		//pag set ng message
+
+		 $this->session->set_flashdata('product_updated', 'Your post has been updated.');
+
+		redirect('admin_view');
+		}
+
+
+		public function delete($id){
+
+		if(!$this->session->userdata('logged_in')){
+				redirect('users/admin_login');
+			}
+
+			$this->product_model->delete_product($id);
+
+			//pag set ng message
+
+		 	$this->session->set_flashdata('product_deleted', 'Your post has been deleted.');
+
+			redirect('products/admin_view');
+		}
+	}
+
+
 
 ?>
 
