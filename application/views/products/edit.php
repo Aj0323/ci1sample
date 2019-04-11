@@ -2,20 +2,23 @@
 <?php echo validation_errors(); ?>
 <?php echo form_open_multipart('products/product_update'); ?>
  <div class="container"> 
+  <input type="hidden" name="id" value="<?php echo $products['id']; ?>">
   <div class="form-group">
     <label>Name</label>
-    <textarea type="text" class="form-control" name="product_name"><?php echo $products['product_name']; ?></textarea>
+    <input type="text" class="form-control" name="product_name" value="<?php echo $products['product_name']; ?>">
   </div>
   <div class="form-group">
     <label for="exampleInputPassword1">Description</label>
-    <textarea id="editor1" type="text" class="form-control" name="description"><?php echo $products['description']; ?></textarea>
+    <input type="text" class="form-control" name="description" value="<?php echo $products['description']; ?>">
   </div>
   <label>Price</label>
-    <textarea type="text" class="form-control" name="price"><?php echo $products['price']; ?></textarea>
+    <input type="text" class="form-control" name="price" value="<?php echo $products['price']; ?>">
   <div class="form-group">
     <label>Quantity</label>
-    <textarea type="text" class="form-control" name="quantity"><?php echo $products['quantity']; ?></textarea>
+    <input type="text" class="form-control" name="quantity" value="<?php echo $products['quantity']; ?>">
   <div class="form-group">
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+ <button type="submit" class="btn btn-primary">Submit</button>
 </div>
+</div>
+</form>

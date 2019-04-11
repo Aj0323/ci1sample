@@ -19,12 +19,14 @@ class Product_model extends CI_Model{
 	}
 
 	public function create_product($product_image){
+		$slug = url_title($this->input->post('product_name'));
 		$data = array(
 
 			'product_name' => $this->input->post('product_name'),
 			'price' => $this->input->post('price'),
 			'quantity' => $this->input->post('quantity'),
 			'category_id' => $this->input->post('category_id'),
+			'slug' => $slug,
 			'description' => $this->input->post('description'),
 			'product_image' => $product_image
 
@@ -89,14 +91,15 @@ class Product_model extends CI_Model{
 
 			return $this->db->update('cart', $data);
 		} */
-		public function update_product(){
-			$item = $this->input->post('product_name');
-
+		public function update(){
+			
+			$slug = url_title($this->input->post('product_name'));
 			$data = array(
 				'product_name' => $this->input->post('product_name'),
+				'description' => $this->input->post('description'),
+				'slug' => $slug,
 				'price' => $this->input->post('price'),
-				'quantity' => $this->input->post('quantity'),
-				'description' => $this->input->post('description')
+				'quantity' => $this->input->post('quantity')
 			);
 			$this->db->where('id', $this->input->post('id'));
 			return $this->db->update('products', $data);

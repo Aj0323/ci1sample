@@ -49,7 +49,7 @@ class Products extends CI_Controller{
 			}
 
 			$this->product_model->create_product($product_image);
-				redirect('products');
+				redirect('products/admin_view');
 		}
 	}
 
@@ -81,10 +81,10 @@ class Products extends CI_Controller{
 			$this->load->view('templates/admin_footer');	
 	}
 
-	public function admin_product_view($id = null){
+	public function admin_product_view($slug){
 
 	
-		$data['products'] = $this->product_model->fetch_products($id);
+		$data['products'] = $this->product_model->fetch_products($slug);
 
 		if(empty($data['products'])){
 				show_404();
@@ -128,15 +128,15 @@ class Products extends CI_Controller{
 			);
 		}
 	} */
-	public function edit_product($products){
+	public function edit_product($slug){
 
 		if(!$this->session->userdata('logged_in')){
 				redirect('admin/login');
 			}
 
-			$data['products'] = $this->product_model->fetch_product($products);
+			$data['products'] = $this->product_model->fetch_product($slug);
 			if($this->session->userdata('user_id')){
-				redirect('products');
+				redirect('admin_view');
 			}
 
 
@@ -148,16 +148,14 @@ class Products extends CI_Controller{
 	}
 
 	public function product_update(){
-		if(!$this->session->userdata('logged_in')){
-				die('UNAUTHORIZE ACCESS');
-			}
-		$this->product_model->update_product();
+
+		$this->product_model->update();
 
 		//pag set ng message
 
-		 $this->session->set_flashdata('product_updated', 'Your post has been updated.');
+		 $this->session->set_flashdata('product_updated', 'Your product has been updated.');
 
-		redirect('admin_view');
+		redirect('products/admin_view');
 		}
 
 

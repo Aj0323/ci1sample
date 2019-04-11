@@ -1,7 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-$route['products/product_update/'] = 'products/product_update/';
+$route['users/admin_view/'] = 'users/admin_view/';
+$route['products/product_update'] = 'products/product_update';
 $route['products/edit_product/$1'] = 'products/edit_product/$1';
 $route['products/admin_view'] = 'products/admin_view';
 $route['users/admin_home'] = 'users/admin_home';
