@@ -173,6 +173,40 @@ class Products extends CI_Controller{
 
 			redirect('products/admin_view');
 		}
+
+		public function cart_view(){
+			$data['carts'] = $this->product_model->get_cart();
+			$data['sum'] = $this->product_model->get_total();
+			$data['title'] = 'Your Cart';
+			if(!$this->session->userdata('logged_in')){
+				redirect('users/login');
+			}
+			//kuha ng cart
+			$data['title'] = 'Your Cart';
+
+			$this->load->view('templates/header');
+			$this->load->view('products/cart', $data);
+			$this->load->view('templates/footer');
+		}
+
+		public function delete_cart($id){
+			if(!$this->session->userdata('logged_in')){
+				redirect('users/login');
+			}
+
+			$this->product_model->delete_cart($id);
+
+			redirect('products/cart_view');
+		}
+
+		public function check_out(){
+
+			$data['quantitypr'] = $this->product_model->check_out();
+
+			$this->load->view('templates/header');
+			$this->load->view('products/view', $data);
+			$this->load->view('templates/footer');
+		}
 	}
 
 

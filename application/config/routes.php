@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+$route['products/check_out'] = 'products/checkout';
+$route['products/delete_cart/$1'] = 'products/delete_cart/$1';
+$route['products/cart_view'] = 'products/cart_view';
+$route['products/insert_cart'] = 'products/insert_cart';
 $route['users/admin_view/'] = 'users/admin_view/';
 $route['products/product_update'] = 'products/product_update';
 $route['products/edit_product/$1'] = 'products/edit_product/$1';

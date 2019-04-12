@@ -30,6 +30,7 @@
         <li><a class="nav-link" href="<?php echo base_url(); ?>users/register">Register</a></li>
       <?php endif; ?>
       <?php if($this->session->userdata('logged_in')) : ?>
+        <li><a class="nav-link" href="products/cart_view">Cart</a></li>
         <li><a class="nav-link" href="<?php echo base_url(); ?>users/logout">Log Out</a></li>
       <?php endif; ?>
     </ul>
