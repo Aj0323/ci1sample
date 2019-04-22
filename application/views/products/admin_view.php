@@ -81,9 +81,38 @@ h1 {
 <?php if(!$this->session->userdata('logged_in')) : ?>
   <p class="alert alert-success">Please Log In to View Products</p>
 <?php endif; ?>
-    <h1><?= $title; ?></h1>
-    <p class="second-header"><strong>VIEW ALL PRODUCTS</strong></p>
+  <!-- Trigger the modal with a button -->
+  <button id="btn" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="float: right;">Open Modal</button>
+    
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
 
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+      <script>
+      $('#btn').click(function(){
+      $('#myModal').modal('show');
+      $('#myModal').find('.modal-title').text('hello');
+    });
+      </script>
+
+    </div>
+  </div>
+    <h2><?= $title; ?></h2>
+    <p class="second-header"><strong>VIEW ALL PRODUCTS</strong></p><br>
+    
 <?php foreach ($products as $product) : ?>
   <div class="container">
         <div class="column">

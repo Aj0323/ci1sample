@@ -1,10 +1,14 @@
 <html>
 <head>
 	<title>ci1sample</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/view_product.css">
   <script src="http://cdn.ckeditor.com/4.11.3/standard/ckeditor.js"></script>
+
+ 
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -30,7 +34,7 @@
         <li><a class="nav-link" href="<?php echo base_url(); ?>users/register">Register</a></li>
       <?php endif; ?>
       <?php if($this->session->userdata('logged_in')) : ?>
-        <li><a class="nav-link" href="products/cart_view">Cart</a></li>
+        <li><a class="nav-link" href="<?php echo base_url(); ?>products/cart_view">Cart</a></li>
         <li><a class="nav-link" href="<?php echo base_url(); ?>users/logout">Log Out</a></li>
       <?php endif; ?>
     </ul>

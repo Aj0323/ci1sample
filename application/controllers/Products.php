@@ -12,6 +12,20 @@ class Products extends CI_Controller{
 		$this->load->view('templates/footer');
 	}
 
+
+	public function checkoutproduct (){
+
+		$name=$this->input->post('name');
+		$quantity=$this->input->post('qty');
+		$total=$this->input->post('total_qty');
+
+
+     	$data['checkout'] = $this->product_model->checkout_product($name,$quantity,$total);
+		
+		redirect('products');
+
+	}
+
 	public function create(){
 
 		$data['title'] = 'Add Product';
@@ -54,10 +68,8 @@ class Products extends CI_Controller{
 	}
 
 
-
 	public function product_view($id = null){
 
-	
 		$data['products'] = $this->product_model->fetch_products($id);
 
 		if(empty($data['products'])){
@@ -74,7 +86,7 @@ class Products extends CI_Controller{
 
 		$data['title'] ='Products';
 		
-		$data['products'] = $this->product_model->get_product();
+		$data['products'] = $this->product_model->admin_product();
 	
 			$this->load->view('templates/admin_header');
 			$this->load->view('products/admin_view', $data);
@@ -83,37 +95,35 @@ class Products extends CI_Controller{
 
 	public function admin_product_view($slug){
 
-	
 		$data['products'] = $this->product_model->fetch_products($slug);
 
 		if(empty($data['products'])){
 				show_404();
 			}
 
-	
 			$this->load->view('templates/admin_header');
 			$this->load->view('products/admin_product_view', $data);
 			$this->load->view('templates/footer');	
 	}
 
 
-	public function insert_cart($product_id = null, $product_name = null, $product_price = null){
+	public function insert_cart($product_id = null, $product_name = null, $product_price = null) {
 
 		$data['carts'] = $this->product_model->fetch_cart($product_id, $product_name, $product_price);
 
 		if(empty($data['carts'])){
 			show_404();
 	} else {
-		$product_data = array(
+		$product_data = array(	
 			'product_id' => $product_id,
 			'price' => $product_price,
 			'logged_in' => true
 		);
-		/*$this->load->view('templates/header');
-		$this->load->view('products/insert_cart');
-		$this->load->view('templates/footer'); */
-
-		redirect('home');
+		#$this->load->view('templates/header');
+		#$this->load->view('products/insert_cart');
+		#$this->load->view('templates/footer');
+		
+		redirect('products');
 		} 
 	}
 
@@ -138,7 +148,6 @@ class Products extends CI_Controller{
 			if($this->session->userdata('user_id')){
 				redirect('admin_view');
 			}
-
 
 			$data['title'] = 'Edit Product';
 
@@ -201,10 +210,10 @@ class Products extends CI_Controller{
 
 		public function check_out(){
 
-			$data['quantitypr'] = $this->product_model->check_out();
+			$data = $this->product_model->check_out();
 
 			$this->load->view('templates/header');
-			$this->load->view('products/view', $data);
+			$this->load->view('products/index', $data);
 			$this->load->view('templates/footer');
 		}
 	}
@@ -276,4 +285,4 @@ class Products extends CI_Controller{
 		return $s;
 	}
 */
- -->
+-->

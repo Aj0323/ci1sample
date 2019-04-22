@@ -111,7 +111,7 @@
 
 		  			$this->session->set_userdata($admin_data);
 		  			//pag set ng message
-		  			$this->session->set_flashdata('user_loggedin', 'You are now Logged in.');
+		  			$this->session->set_flashdata('admin_loggedin', 'Welcome Admin');
 
 		  			redirect('users/admin_home');
 

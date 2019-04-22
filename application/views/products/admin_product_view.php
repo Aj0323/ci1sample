@@ -10,7 +10,8 @@
   </section>  
   
   <section class="product-content">
-    <b class="product-price">₱ <?php echo $products['price']; ?></b>
+    <b class="product-price">₱ <?php echo $products['price']; ?></b> <br>
+    <b class="product-price">QTY: <?php echo $products['quantity']; ?></b> <br>
     <br>
     
     <div class="product-description">

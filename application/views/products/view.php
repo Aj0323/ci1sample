@@ -7,6 +7,7 @@
 
   <input type="hidden" name="product_id" value="<?php echo $products['id']; ?>">
   <input type="hidden" name="product_name" value="<?php echo $products['product_name']; ?>">
+  <input type="hidden" name="total_quantity" value="<?php echo $products['quantity']; ?>">
   <input type="hidden" name="product_image" value="<?php echo $products['product_image']; ?>">
   <input type="hidden" name="price" value="<?php echo $products['price']; ?>">
   
@@ -25,7 +26,7 @@
       <input type="number" min="1" name="quantity" required="">
       <br>
       <br>
-       <div><button class="btn btn-success btn-block" type="submit">Add to cart</button></div>
+       <div><button class="btn btn-success btn-block" type="submit" id="cart">Add to cart</button></div>
     </div>
   </section>
   

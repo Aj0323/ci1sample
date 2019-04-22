@@ -6,27 +6,53 @@ class Product_model extends CI_Model{
 	}
 
 	public function get_product(){
-
-		$query = $this->db->get('products');
-		return $query->result_array();
-	}
+		$rs = [];
+		$query = $this->db->query('SELECT * FROM products');
+		foreach($query->result_array() as $row){
+			if($row['quantity'] > 0){
+				$rs[] = $row;
+			}
+		}
+		
+		return $rs;
+		// return $query->result_array();
+		
+		// $id = $this->db->select('id')
+		// 	->from('products');
+		// 	return $id->result_array();
+				
+		// $qtyview = $this->db->select('quantity')
+		// 		->from('products')
+		// 		->where('id', $id);
+		// 		return $qtyview->row_array();
+		
+		// 	if($qtyview < 1){
+		// 		return false;
+		// 	}
+		}
+		
+		public function admin_product(){
+			$query = $this->db->get('products');
+			return $query->result_array();
+		}
 
 	public function get_category(){
-		$this->db->order_by('categories.id', 'DESC');
+			$this->db->order_by('categories.id', 'DESC');
 
-		$query = $this->db->get('categories');
-		return $query->result_array();
-	}
+			$query = $this->db->get('categories');
+			return $query->result_array();
+		}
 
 	public function create_product($product_image){
-		$slug = url_title($this->input->post('product_name'));
-		$data = array(
+			$slug = url_title($this->input->post('product_name'));
+			$data = array(
 
 			'product_name' => $this->input->post('product_name'),
 			'price' => $this->input->post('price'),
 			'quantity' => $this->input->post('quantity'),
 			'category_id' => $this->input->post('category_id'),
 			'slug' => $slug,
+			'user_id' => $this->session->userdata('admin_id'),
 			'description' => $this->input->post('description'),
 			'product_image' => $product_image
 
@@ -85,7 +111,9 @@ class Product_model extends CI_Model{
 				'price' => $subtotal,
 				'product_name'=> $this->input->post('product_name'),
 				'quantity' => $this->input->post('quantity'),
-				'user_id' => $this->session->userdata('user_id')
+				'user_id' => $this->session->userdata('user_id'),
+				'total_quantity'=>$this->input->post('total_quantity'),
+				'status' => '1'
 			);
 			return $this->db->insert('cart', $data);
 
@@ -119,14 +147,7 @@ class Product_model extends CI_Model{
 			return true;
 		}
 
-		public function get_cart($id = false){
-			$this->db->order_by('cart.cart_date');
-			$user_id = $this->session->userdata('user_id');
-			$this->db->where('user_id', $user_id);
-			$query = $this->db->get('cart');
-
-			return $query->result_array();
-		}
+		
 
 		public function delete_cart($id){
 			$this->db->where('id', $id);
@@ -144,18 +165,72 @@ class Product_model extends CI_Model{
 
 		}
 
-		public function check_out(){
+		public function get_cart($id = false){
+			$this->db->order_by('cart.cart_date');
+			$user_id = $this->session->userdata('user_id');
+			$this->db->where('user_id', $user_id);
+			$query = $this->db->get('cart');
+
+			return $query->result_array();
+		}
+
+			#public function check_out(){
 			
-			$this->db->select('cart.quantity sum(product.quantity) as product_quantity');
-			$this->db->from('products');
-			$this->db->join('cart', 'cart.quantity = products.quantity', 'right');
-			$this->db->group_by('clients.client_ref');
-			$this->db->order_by('product_quantity', 'desc');
-			$products = $this->db->get()->result_object();
+			#$user_id = $this->session->userdata('user_id');
 
-			$productq = $this->input->post('productq');
-			$cartq = $this->input->post('cartq');
+			#$get_cart = $this->db->query('SELECT quantity FROM cart WHERE user_id = $user_id');
+			#return $get_cart->result_array();
 
-			$this->db->update('products', $products);
+			#foreach ($get_cart as $cart) {
+			#	if($cart === NULL){
+			#		show_404();
+			#	} else {
+			#		echo '$cart';
+			#	}
+
+			#}
+		
+			#$this->db->update('products', $newquan);
+
+			#$this->db->select('cart.quantity sum(product.quantity) as product_quantity');
+			#$this->db->from('products');
+			#$this->db->join('cart', 'cart.quantity = products.quantity', 'right');
+			#$this->db->group_by('clients.client_ref');
+			#$this->db->order_by('product_quantity', 'desc');
+			#$products = $this->db->get()->result_object();
+
+			#$productq = $this->input->post('productq');
+			#$cartq = $this->input->post('cartq');
+
+		#get item qt (ordered)
+		#forloop
+		#get product qt
+		#product qt - item qt
+		#update product qt
+		
+	
+
+
+
+		public function checkout_product($name,$quantity,$total){
+		
+		$id = $this->session->userdata('user_id');
+		
+		$name = $this->input->post('name');
+			
+		$total_qty = $this->input->post('total_qty');
+		$qty = $this->input->post('qty');
+		
+		$total_quantity = $total_qty - $qty;
+			
+		$data = array(
+			'quantity' => $total_quantity
+		);
+		
+		$this->db->where('product_name', $name);
+		$this->db->update('products', $data);
+		$this->db->where('user_id', $id);
+		$this->db->delete('cart');
+		return true;
 		}
 	}	
