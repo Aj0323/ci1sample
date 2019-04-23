@@ -29,9 +29,9 @@
 <?php echo form_open_multipart('Products/checkoutproduct'); ?>
   <?php echo validation_errors(); ?>
 
-  <input type="hidden" name="name" value="<?php echo $cart['product_name']; ?>">
-  <input type="hidden" name="qty" value="<?php echo $cart['quantity']; ?>">
-  <input type="hidden" name="total_qty" value="<?php echo $cart['total_quantity']; ?>">
+  <input type="hidden" name="name[]" value="<?php echo $cart['product_name']; ?>">
+  <input type="hidden" name="qty[]" value="<?php echo $cart['quantity']; ?>">
+  <input type="hidden" name="total_qty[]" value="<?php echo $cart['total_quantity']; ?>">
 
 <?php  endforeach; ?>
   <input type="submit" name="submit" style="float:right;" class="btn btn-success">

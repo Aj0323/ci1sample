@@ -1,3 +1,7 @@
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <style type="text/css">
 
 * {
@@ -23,6 +27,7 @@ h1 {
 
 .h2{
   font-size: 20px;
+  color: #ffffff;
 }
 
 .h3{
@@ -55,7 +60,7 @@ h1 {
 
 /* Content */
 .content {
-  background-color: #00b77a;
+  background-color: #000000;
   padding: 10px;
 }
 
@@ -81,35 +86,70 @@ h1 {
 <?php if(!$this->session->userdata('logged_in')) : ?>
   <p class="alert alert-success">Please Log In to View Products</p>
 <?php endif; ?>
-  <!-- Trigger the modal with a button -->
-  <button id="btn" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" style="float: right;">Open Modal</button>
-    
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
+<div class="container">
+
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="float: right;">
+    Add Product
+  </button>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+        <!-- header -->
         <div class="modal-header">
+          <h4 class="modal-title">Add Product</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
         </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
+        
+        <!-- body -->
+    <div class="modal-body">
+        <?php echo validation_errors(); ?>
+          <?php echo form_open_multipart('products/create'); ?>
+          <div class="container"> 
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" class="form-control" name="product_name" placeholder="Product Name">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Description</label>
+              <textarea id="editor1" type="text" class="form-control" name="description" placeholder="Add Description"></textarea>
+            </div>
+            <label>Price</label>
+              <input type="text" class="form-control" name="price" placeholder="Price">
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="text" class="form-control" name="quantity" placeholder="Quantity">
+            <div class="form-group">
+              <label>Category</label>
+              <select name="category_id" class="form-control">
+              <?php foreach($categories as $category): ?>
+                <option value="<?php echo $category['id']; ?>"><?php echo $category['name'] ?></option>
+              <?php endforeach; ?>  
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Upload Images</label>
+                <br>
+              <input type="file" name="userfile" size="20">
+            </div>
+          </div>
+                  </div>
+        
+        <!-- footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
         </div>
+        
       </div>
-
-      <script>
-      $('#btn').click(function(){
-      $('#myModal').modal('show');
-      $('#myModal').find('.modal-title').text('hello');
-    });
-      </script>
-
     </div>
   </div>
+  </form>
+</div>
+
     <h2><?= $title; ?></h2>
     <p class="second-header"><strong>VIEW ALL PRODUCTS</strong></p><br>
     

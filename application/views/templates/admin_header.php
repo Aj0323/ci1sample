@@ -1,8 +1,11 @@
 <html>
 <head>
   <title>ADMIN</title>
-  
-       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
       <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -11,64 +14,6 @@
       <link rel="stylesheet" href="assets/css/view_product.css">
       <script src="http://cdn.ckeditor.com/4.11.3/standard/ckeditor.js"></script>
       
-      <script>
-        $('#btn').click(function(){
-      $('#myModal').modal('show');
-      $('#myModal').find('.modal-title').text('hello');
-    });
-      </script>
-
-      <script>
-        $(document).ready(function {
-          var notifCart = 2;
-          $("button").click(function {
-            notifCart = notifCart
-            $("#carts").load("load_cart.php",{
-
-            });
-          });
-      });
-      </script>
-      <script>
-        $(document).ready(function(){
-          function load_unseen_notification(view = '')
-          {
-            $.ajax({
-              url:"cart_fetch.php",
-              method:"POST",
-              data:{view:view},
-              dataType:"json",
-              success:function(data)
-              {
-                $('.dropdown-menu').html(data.notification);
-                if(data.unseen_notification > 0 )
-                {
-                  $('.count').html(data.unseen_notifcation);
-                }
-              }
-            })
-          }
-
-          load_unseen_notification();
-
-          $('#cart_form').on('submit', function(){
-            event.preventDefault();
-            if($('#product_name').val() != '' && $('#quantity').val() != ''){
-              var form_data = $(this).serialize();
-              $.ajax({
-                url:
-                method:"POST",
-                data:form_data,
-                success:function(data)
-                {
-                  $('#cart_form')[0].reset();
-                  load_unseen_notification();
-                }
-              })
-            }
-          });
-        });
-      </script>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -79,20 +24,18 @@
           <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url(); ?>users/admin_home">Home</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>users/admin_home">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url(); ?>products/admin_view">Products</a>
+                <a class="navbar-brand" href="<?php echo base_url(); ?>products/admin_view">Products</a>
               </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <?php if(!$this->session->userdata('logged_in')) : ?>
-                <li><a class="nav-link" href="<?php echo base_url(); ?>users/admin_login">Log In</a></li>
+                <li><a class="navbar-brand" href="<?php echo base_url(); ?>users/admin_login">Log In</a></li>
               <?php endif; ?>
               <?php if($this->session->userdata('logged_in')) : ?>
-                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="label label-pill label-danger count" style="border-radius:10px;"></span> <span class="fa fa-bell">ASD</span></a></li>
-                <li><a class="nav-link" href="<?php echo base_url(); ?>products/create">Add Product</a></li>
-                <li><a class="nav-link" href="<?php echo base_url(); ?>users/admin_logout">Log Out</a></li>
+                <li><a class="navbar-brand" href="<?php echo base_url(); ?>users/admin_logout">Log Out</a></li>
               <?php endif; ?>
         </ul>
       </div>

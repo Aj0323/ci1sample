@@ -22,7 +22,7 @@ class Products extends CI_Controller{
 
      	$data['checkout'] = $this->product_model->checkout_product($name,$quantity,$total);
 		
-		redirect('products');
+		#redirect('products');
 
 	}
 
@@ -87,6 +87,7 @@ class Products extends CI_Controller{
 		$data['title'] ='Products';
 		
 		$data['products'] = $this->product_model->admin_product();
+		$data['categories'] = $this->product_model->get_category();
 	
 			$this->load->view('templates/admin_header');
 			$this->load->view('products/admin_view', $data);

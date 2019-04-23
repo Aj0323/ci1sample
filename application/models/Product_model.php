@@ -212,25 +212,49 @@ class Product_model extends CI_Model{
 
 
 
-		public function checkout_product($name,$quantity,$total){
-		
+		public function checkout_product(){
+
 		$id = $this->session->userdata('user_id');
+		$arrqty = [];
+		//item qty
+		$query = $this->db->query("SELECT quantity, total_quantity, product_name FROM cart WHERE user_id = '$id'");
+
+		foreach($query->result_array() as $row){
+			if($row['quantity'] > 0){
+				$arrqty[] = $row;
+			}
+		}
+
+		$updateqty = $arrqty[0]['total_quantity'] - $arrqty[0]['quantity'];
+		print_r($updateqty);
+
+		$arrqty2 = [];
+		$query2 = $this->db->query("SELECT quantity, product_name FROM products");
+
+		foreach($query2->result_array() as $row2){
+			if($row2['quantity'] > 0){
+				$arrqty2[] = $row2;
+			}
+		}
+		//return $arrqty2;
+
 		
-		$name = $this->input->post('name');
+		//product qty
+		#$total_qty = $this->input->post('total_qty');
+		
+		#$total_quantity = $total_qty - $rs;
 			
-		$total_qty = $this->input->post('total_qty');
-		$qty = $this->input->post('qty');
-		
-		$total_quantity = $total_qty - $qty;
-			
-		$data = array(
-			'quantity' => $total_quantity
-		);
-		
-		$this->db->where('product_name', $name);
-		$this->db->update('products', $data);
-		$this->db->where('user_id', $id);
-		$this->db->delete('cart');
-		return true;
+		#$data = array(
+		#	'quantity' => $total_quantity
+		#);
+		#$name = $this->input->post('name');
+		#$id = $this->session->userdata('user_id');
+
+		#$this->db->where('product_name', $name);
+		#$this->db->update('products', $data);
+
+		#$this->db->where('user_id', $id);
+		#$this->db->delete('cart');
+		#return true;
 		}
 	}	
