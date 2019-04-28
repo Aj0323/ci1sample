@@ -1,7 +1,5 @@
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
 <style type="text/css">
 
 * {
@@ -88,10 +86,11 @@ h1 {
 <?php endif; ?>
 
 <div class="container">
-
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="float: right;">
+<?php if($this->session->userdata('logged_in')) : ?>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="float: right;" id="btnAdd">
     Add Product
   </button>
+<?php endif; ?>
 
   <!-- The Modal -->
   <div class="modal fade" id="myModal">
@@ -107,7 +106,7 @@ h1 {
         <!-- body -->
     <div class="modal-body">
         <?php echo validation_errors(); ?>
-          <?php echo form_open_multipart('products/create'); ?>
+          <form id="myForm" action="" method="post" class="form-horizontal">
           <div class="container"> 
             <div class="form-group">
               <label>Name</label>
@@ -141,7 +140,7 @@ h1 {
         <!-- footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary" id="submit">Submit</button>
         </div>
         
       </div>
@@ -149,7 +148,103 @@ h1 {
   </div>
   </form>
 </div>
+<script>
+$('#btnAdd').click(function(){
+      $('#myModal').modal('show');
+      $('#myModal').find('.modal-title').text('Add Product');
+      $('#myForm').attr('action', '<?php base_url('products/addProduct');?>');
+    });
 
+
+    $('#submit').click(function(){
+      var url = $('#myForm').attr('action');
+      var data = $('#myForm').serialize();
+      //validate form
+      var productName = $('input[name=product_name]');
+      var price = $('input[name=price]');
+      var quantity = $('input[name=quantity]');
+      var category_id = $('select[name=category_id]');
+      var product_image = $('input[name=userfile]');
+      var description = $('textarea[name=description]');
+      var result = '';
+      if(productName.val()==''){
+        productName.parent().parent().addClass('has-error');
+      }else{
+        productName.parent().parent().removeClass('has-error');
+        result +='1';
+      }
+      if(price.val()==''){
+        price.parent().parent().addClass('has-error');
+      }else{
+        price.parent().parent().removeClass('has-error');
+        result +='2';
+      }
+      if(quantity.val()==''){
+        quantity.parent().parent().addClass('has-error');
+      }else{
+        quantity.parent().parent().removeClass('has-error');
+        result +='3';
+      }
+
+      if(result=='12'){
+        $.ajax({
+          type: 'ajax',
+          method: 'post',
+          url: url,
+          data: data,
+          async: false,
+          dataType: 'json',
+          success: function(response){
+            if(response.success){
+              $('#myModal').modal('hide');
+              $('#myForm')[0].reset();
+              if(response.type=='add'){
+                var type = 'added'
+              }else if(response.type=='update'){
+                var type ="updated"
+              }
+              $('.alert-success').html('Employee '+type+' successfully').fadeIn().delay(4000).fadeOut('slow');
+              showAllEmployee();
+            }else{
+              alert('Error');
+            }
+          },
+          error: function(){
+            alert('Could not add data');
+          }
+        });
+      }
+    });
+</script>
+
+<!--
+<script>
+  $(document).ready(function() {
+    $('#insert_product').on('#submit', function(event) {
+      event.preventDefault();
+      if($('#product_name').val() == ''){
+        alert("Product's name is required!");
+      } else if($('#price').val() == ''){
+        alert("Oh your product is free eh? right mate? Put some price in it.");
+      } else if($('#quantity').val() == ''){
+        alert("You're selling nothing bruh!");
+      } else {
+        $.ajax({
+          url:"Add_product.php",
+          method:"POST",
+          data:$('#insert_product').serialize(),
+          success:function(data)
+          {
+            $('#insert_product')[0].reset();
+            $('#myModal').modal('hide');
+            $('#product_table').html(data);
+          }
+        });
+      }
+    });
+  });
+</script>
+-->
     <h2><?= $title; ?></h2>
     <p class="second-header"><strong>VIEW ALL PRODUCTS</strong></p><br>
     

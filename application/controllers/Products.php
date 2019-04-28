@@ -1,15 +1,88 @@
 <?php
 
 class Products extends CI_Controller{
-	
+	function __construct(){
+		parent:: __construct();
+		$this->load->model('product_model', 'm');
+	}
+
 	public function index(){
 		$data['title'] ='Products';
 		
-		$data['products'] = $this->product_model->get_product();
+		$data['products'] = $this->m->get_product();
 
 		$this->load->view('templates/header');
 		$this->load->view('products/index', $data);
 		$this->load->view('templates/footer');
+	}
+
+	public function updateProduct(){
+		$result = $this->m->updateProduct();
+		$msg['success'] = false;
+		$msg['type'] = 'update';
+		if($result){
+			$msg['success'] = true;
+		}
+		json_encode($msg);
+	}
+
+	public function ajax_upload()
+	{
+		if(isset($_FILES["image_file"]["name"]))
+		{
+			
+			$config['upload_path']='./assets/images/products';
+
+			$config['allowed_types'] = 'jpg|jpeg|png|gif';
+			$this->load->library('upload', $config);
+			if(!$this->upload->do_upload('image_file'))
+			{
+			$error = array('error' => $this->upload->display_errors());
+				$upload_image = 'noimage.jpg';
+			}
+			else
+			{
+				$data = array('upload_data' => $this->upload->data());
+				$upload_image = $_FILES['image_file']['name'];
+			}
+				$result = $this->m->addProduct($upload_image);
+			$msg['success'] = false;	
+			$msg['type'] = 'add';
+			if($result){
+			$msg['success'] = true;
+		}
+		echo json_encode($msg);
+		}
+	}
+
+	public function addProduct(){
+
+		$result = $this->m->addProduct();
+		$msg['success'] = false;
+		$msg['type'] = 'add';
+		if($result){
+			$msg['success'] = true;
+		}
+		echo json_encode($msg);
+	}
+
+	public function editProduct(){
+		$result = $this->product_model->editProduct();
+		echo json_encode($result);
+	}
+
+	public function deleteProduct(){
+		$result = $this->m->deleteProduct();
+		$msg['success'] = false;
+		if($result){
+			$msg['success'] = true;
+		}
+		echo json_encode($msg);
+	}
+
+	public function showAllProducts(){
+		$result = $this->product_model->showAllProducts();
+		echo json_encode($result);
 	}
 
 
@@ -25,6 +98,7 @@ class Products extends CI_Controller{
 		#redirect('products');
 
 	}
+
 
 	public function create(){
 
@@ -90,7 +164,7 @@ class Products extends CI_Controller{
 		$data['categories'] = $this->product_model->get_category();
 	
 			$this->load->view('templates/admin_header');
-			$this->load->view('products/admin_view', $data);
+			$this->load->view('products/admin_view2', $data);
 			$this->load->view('templates/admin_footer');	
 	}
 
@@ -222,68 +296,3 @@ class Products extends CI_Controller{
 
 
 ?>
-
-
-<!-- DIKO NAGAMIT NA MGA FUNCTIONS AND CONDITIONS
-
-/*	public function add_cart(){
-
-		$data['title'] = 'Your Cart';
-
-		$data['cart'] = $this->product_model->fetch_products();
-
-		$this->load->view('templates/header');
-		$this->load->view('products/cart');
-		$this->load->view('templates/footer');
-
-		$item = array(
-			'product_id' => $data['product_id'],
-			'user_id' => $data['user_id'],
-			'quantity' => $data['quantity'],
-			'price' => $data['price']
-		);
-
-		if(!$this->session->has_userdata('cart')){
-			$cart = array($item);
-			$this->session->set_userdata('cart', serialize($cart));
-		} else {
-			$this->exists($id);
-			$cart = array_values(unserialize($this->session->userdata('cart')));
-
-			if($index == 1){
-				array_push($cart, $item);
-				$this->session->set_userdata('cart', serialize($cart));
-			} else {
-				$cart[$index]['quantity']++;
-				$this->session->set_userdata('cart', serialize($cart));
-			}
-		}
-		redirect('cart');
-	} 
-	public function remove($id){
-		$index = $this->exists($id);
-		$cart = array_values(unserialize($this->session->userdata('cart')));
-		unset($cart[$index]);
-		redirect('cart');
-	}
-
-	private function exists($id){
-		$cart = array_values(unserialize($this->session->userdata('cart')));
-		for ($i = 0; $i < count($cart); $i++){
-			if($cart[$i]['id'] == $id){
-			return $i;
-			}
-		}
-		return -1;
-	}
-	private function total(){
-		$items = array_values(unserialize($this->session->userdata('cart')));
-		$s = 0;
-
-		foreach ($items as $item){
-			$s += $item['price'] * $item['quantity'];
-		}
-		return $s;
-	}
-*/
--->

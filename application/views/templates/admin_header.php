@@ -3,16 +3,15 @@
   <title>ADMIN</title>
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-      <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-      <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.css">
-      <link rel="stylesheet" href="assets/css/style.css">
-      <link rel="stylesheet" href="assets/css/view_product.css">
+
+      <link rel="stylesheet" href="<?php base_url('assets/css/style.css'); ?>">
+      <link rel="stylesheet" href="<?php base_url('assets/css/view_product.css');?>">
+      <link rel="stylesheet" type="text/css" href="<?php base_url('assets/css/bootstrap-theme.min.css'); ?>">
       <script src="http://cdn.ckeditor.com/4.11.3/standard/ckeditor.js"></script>
+      <link rel="stylesheet" href="<?php base_url('assets/css/view_product.css');?>">
       
 </head>
 <body>

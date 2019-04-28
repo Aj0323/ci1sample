@@ -5,6 +5,76 @@ class Product_model extends CI_Model{
 		$this->load->database();
 	}
 
+	public function updateProduct(){
+		$id = $this->input->post('id');
+		$data = array(
+			'product_name' => $this->input->post('product_name'),
+			'price' => $this->input->post('price'),
+			'quantity' => $this->input->post('quantity'),
+			'category_id' => $this->input->post('category_id'),
+			'user_id' => $this->session->userdata('admin_id'),
+			'product_image' => $upload_image,
+			'description' => $this->input->post('description')
+		);
+		$this->db->where('id', $id);
+		$this->db->update('products', $data);
+		if($this->db->affected_rows() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public function editProduct(){
+		$id = $this->input->get('id');
+		$this->db->where('id', $id);
+		$query = $this->db->get('products');
+		if($query->num_rows() > 0){
+			return $query->row();
+		}else{
+			return false;
+		}
+	}
+
+	function deleteProduct(){
+		$id = $this->input->get('id');
+		$this->db->where('id', $id);
+		$this->db->delete('products');
+		if($this->db->affected_rows() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public function showAllProducts(){
+		$this->db->order_by('id', 'ASC');
+		$query = $this->db->query("SELECT * FROM products ORDER BY id DESC");
+		if($query->num_rows() > 0){
+			return $query->result_array();
+		}else{
+			return false;
+		}
+	}
+
+	public function addProduct($upload_image){
+		$data = array(
+			'product_name' => $this->input->post('product_name'),
+			'price' => $this->input->post('price'),
+			'quantity' => $this->input->post('quantity'),
+			'category_id' => $this->input->post('category_id'),
+			'user_id' => $this->session->userdata('admin_id'),
+			'product_image' => $upload_image,
+			'description' => $this->input->post('description')
+		);
+		$this->db->insert('products', $data);
+		if($this->db->affected_rows() > 0){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public function get_product(){
 		$rs = [];
 		$query = $this->db->query('SELECT * FROM products');
@@ -15,21 +85,7 @@ class Product_model extends CI_Model{
 		}
 		
 		return $rs;
-		// return $query->result_array();
-		
-		// $id = $this->db->select('id')
-		// 	->from('products');
-		// 	return $id->result_array();
-				
-		// $qtyview = $this->db->select('quantity')
-		// 		->from('products')
-		// 		->where('id', $id);
-		// 		return $qtyview->row_array();
-		
-		// 	if($qtyview < 1){
-		// 		return false;
-		// 	}
-		}
+	}
 		
 		public function admin_product(){
 			$query = $this->db->get('products');
@@ -44,14 +100,12 @@ class Product_model extends CI_Model{
 		}
 
 	public function create_product($product_image){
-			$slug = url_title($this->input->post('product_name'));
 			$data = array(
 
 			'product_name' => $this->input->post('product_name'),
 			'price' => $this->input->post('price'),
 			'quantity' => $this->input->post('quantity'),
 			'category_id' => $this->input->post('category_id'),
-			'slug' => $slug,
 			'user_id' => $this->session->userdata('admin_id'),
 			'description' => $this->input->post('description'),
 			'product_image' => $product_image
@@ -60,7 +114,12 @@ class Product_model extends CI_Model{
 
 		);
 
-		return $this->db->insert('products', $data);
+		$this->db->insert('products', $data);
+		if($this->db->affected_rows() > 0){
+			return $this->db->insert('products', $data);;
+		}else{
+			return false;
+		}
 
 	}
 
