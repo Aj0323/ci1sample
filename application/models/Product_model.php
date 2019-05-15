@@ -5,7 +5,46 @@ class Product_model extends CI_Model{
 		$this->load->database();
 	}
 
-	public function updateProduct(){
+	public function checkoutCod(){
+		$id = $this->session->userdata('user_id');
+		$carts = $this->db->query("SELECT * FROM cart");
+
+		$data = array(
+			'full_name' => $this->input->post('fullname'),
+			'email' => $this->input->post('email'),
+			'full_address' => $this->input->post('address'),
+			'user_id' => $this->session->userdata('user_id'),
+		);
+		$this->db->insert('checkout_cod', $data);
+
+		if($this->db->affected_rows() > 0 ){
+			return true;
+		} else {
+			return false;
+		}	
+	}
+
+	public function checkoutCd(){
+		$id = $this->session->userdata('user_id');
+		$carts = $this->db->query("SELECT * FROM cart");
+
+		$data = array(
+			'full_name' => $this->input->post('fullname1'),
+			'email' => $this->input->post('email1'),
+			'full_address' => $this->input->post('address1'),
+			'card_no' => $this->input->post('card'), 
+			'user_id' => $this->session->userdata('user_id')
+		);
+		$this->db->insert('checkout_card', $data);
+
+		if($this->db->affected_rows() > 0 ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function updateProduct($upload_image){
 		$id = $this->input->post('id');
 		$data = array(
 			'product_name' => $this->input->post('product_name'),
@@ -36,7 +75,7 @@ class Product_model extends CI_Model{
 		}
 	}
 
-	function deleteProduct(){
+	public function deleteProduct(){
 		$id = $this->input->get('id');
 		$this->db->where('id', $id);
 		$this->db->delete('products');
@@ -47,9 +86,32 @@ class Product_model extends CI_Model{
 		}
 	}
 
+	function deleteCart(){
+		$id = $this->input->get('id');
+		$this->db->where('id', $id);
+		$this->db->delete('cart');
+		if($this->db->affected_rows() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	public function showAllProducts(){
 		$this->db->order_by('id', 'ASC');
-		$query = $this->db->query("SELECT * FROM products ORDER BY id DESC");
+		$query = $this->db->query("SELECT * FROM products ORDER BY id ASC");
+		if($query->num_rows() > 0){
+			return $query->result_array();
+		}else{
+			return false;
+		}
+	}
+
+	public function showAllCart(){
+		$this->db->order_by('id', 'ASC');
+		$user_id = $this->session->userdata('user_id');
+		$this->db->where('user_id', $user_id);
+		$query = $this->db->get('cart');
 		if($query->num_rows() > 0){
 			return $query->result_array();
 		}else{
@@ -58,21 +120,45 @@ class Product_model extends CI_Model{
 	}
 
 	public function addProduct($upload_image){
+		$status = $type = 0;
+		$rs = [];
+		$rs['img'] = $upload_image;
 		$data = array(
 			'product_name' => $this->input->post('product_name'),
 			'price' => $this->input->post('price'),
 			'quantity' => $this->input->post('quantity'),
 			'category_id' => $this->input->post('category_id'),
-			'user_id' => $this->session->userdata('admin_id'),
+			
 			'product_image' => $upload_image,
 			'description' => $this->input->post('description')
 		);
-		$this->db->insert('products', $data);
-		if($this->db->affected_rows() > 0){
-			return true;
+
+		if($this->input->post('id') == '0'){
+			$data['user_id'] = $this->session->userdata('admin_id');
+			$sql = $this->db->insert('products', $data);
+			$type = 1;
+			$rs['id'] = $this->db->insert_id();
 		} else {
-			return false;
+			$id = $this->input->get('id');
+				$data = array(
+				'product_name' => $this->input->post('product_name'),
+				'description' => $this->input->post('description'),
+				'price' => $this->input->post('price'),
+
+				'quantity' => $this->input->post('quantity')
+			);
+			$this->db->where('id', $this->input->post('id'));
+			$type=2;
+			return $this->db->update('products', $data);
+			
 		}
+		if($sql){
+			$status = 1;
+		}
+
+		$res = ['status' => $status, 'type' => $type, 'data' => $rs];
+
+		return $res;
 	}
 
 	public function get_product(){
@@ -224,13 +310,15 @@ class Product_model extends CI_Model{
 
 		}
 
-		public function get_cart($id = false){
+		public function get_cart(){
 			$this->db->order_by('cart.cart_date');
 			$user_id = $this->session->userdata('user_id');
 			$this->db->where('user_id', $user_id);
 			$query = $this->db->get('cart');
 
 			return $query->result_array();
+
+			$product_id = $this->db->where('user_id', $user_id)->select('product_id')->from('cart');
 		}
 
 			#public function check_out(){

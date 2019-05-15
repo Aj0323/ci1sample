@@ -1,0 +1,25 @@
+{
+  "name": "ci1sample",
+  "version": "1.0.0",
+  "description": "What is CodeIgniter ###################",
+  "main": "script.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mysql": "^2.17.1",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aj0323/ci1sample.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aj0323/ci1sample/issues"
+  },
+  "homepage": "https://github.com/Aj0323/ci1sample#readme"
+}

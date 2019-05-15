@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <style type="text/css">
 	img{
 		size: 25%;
@@ -6,11 +7,13 @@
 </style>
 
 <div class="container">
-	<h3>Employee Lists</h3>
+	<h3>Products List</h3>
 	<div class="alert alert-success" style="display: none;">
 		
 	</div>
+	<?php if($this->session->userdata('logged_in')) : ?>
 	<button id="btnAdd" class="btn btn-success">Add New</button>
+<?php endif;?>
 	<table class="table table-bordered table-responsive">
 		<thead>
 			<tr>
@@ -19,7 +22,9 @@
 				<td>Product Name</td>
 				<td>Price</td>
 				<td>Quantity</td>
+				<?php if($this->session->userdata('logged_in')) :?>
 				<td>Action</td>
+			<?php endif;?>
 			</tr>
 		</thead>
 		<tbody id="showdata">
@@ -32,34 +37,34 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" id="closeForm" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Modal title</h4>
       </div>
       <div class="modal-body">
         	<form id="myForm" action="" method="post" class="form-horizontal">
         		<div class="form-group">
-        			<input type="hidden" name="id" value="0">
+        			<input type="hidden" name="id" value="0" id="prod_id">
         			<label for="name" class="label-control col-md-4">Product Name</label>
         			<div class="col-md-8">
-        				<input type="text" name="product_name" class="form-control">
+        				<input type="text" name="product_name" class="form-control" id="product_name">
         			</div>
         		</div>
         		<div class="form-group">
         			<label for="name" class="label-control col-md-4">Price</label>
         			<div class="col-md-8">
-        				<input type="text" name="price" class="form-control">
+        				<input type="text" name="price" class="form-control" id="price">
         			</div>
         		</div>
         		<div class="form-group">
         			<label for="name" class="label-control col-md-4">Quantity</label>
         			<div class="col-md-8">
-        				<input type="text" name="quantity" class="form-control">
+        				<input type="text" name="quantity" class="form-control" id="quantity">
         			</div>
         		</div>
         		<div class="form-group">
         			<label for="name" class="label-control col-md-4">Category</label>
         			<div class="col-md-8">
-        				<select name="category_id" class="form-control">
+        				<select name="category_id" class="form-control" id="categories">
 			              <?php foreach($categories as $category): ?>
 			                <option value="<?php echo $category['id']; ?>"><?php echo $category['name'] ?></option>
 			              <?php endforeach; ?>  
@@ -67,16 +72,16 @@
         			</div>
         		</div>
         		<div class="form-group" id="product_image">
-        			<label for="address" class="label-control col-md-4">Upload Photo</label>
+        			<label for="upload_photo" class="label-control col-md-4">Upload Photo</label>
         			<div class="col-md-8">
         				<input type="file" name="image_file" size="20"
         				id="image_file">
         			</div>
         		</div>
         		<div class="form-group">
-        			<label for="address" class="label-control col-md-4">Description</label>
+        			<label for="description" class="label-control col-md-4">Description</label>
         			<div class="col-md-8">
-        				<textarea class="form-control" name="description"></textarea>
+        				<textarea class="form-control" name="description" id="description"></textarea>
         			</div>
         		</div>
         	
@@ -112,19 +117,34 @@
 	$(function(){
 		showAllProducts();
 
+		var socket = io.connect('http://localhost:3000');
+		var $prod_id = $('#prod_id');
+		var $form = $('#myForm');
+		var $prodname = $('#product_name');
+		var $price = $('#price');
+		var $qty = $('#quantity');
+		var $cat = $('#categories');
+		var $photo = $('#image_file');
+		var $desc = $('#description');
+		
+
 		//Add New
 		$('#btnAdd').click(function(){
 			$('#myModal').modal('show');
 			$('#myModal').find('.modal-title').text('Add New Product');
 		});
 
+		$('#closeForm').click(function(){
+			$('#myForm')[0].reset();
+		});
 
 		$(document).ready(function(){
 		$('#myForm').on('submit', function(e){
 			e.preventDefault();
 
+
 			$.ajax({
-				url:'<?php echo base_url();?>Products/ajax_upload',
+				url:'<?php echo base_url();?>Products/addProduct',
 				method:'post',
 				data:new FormData(this),
 				processData:false,
@@ -133,26 +153,64 @@
 				async:false,
 				dataType:'json',
 			success:function(response){
-					if(response.success){
+				console.log(response);
+				var data_add = {
+					'id' : response.data.id,
+					'product_name' : $prodname.val(), 
+					'price' : $price.val(), 
+					'quantity' : $qty.val(),
+					'category' : $cat.val(),
+					'photo' : response.data.img,
+					'description' : $desc.val()
+				}
+
+				socket.emit('add_product', data_add);	
+				if(response.success){
 					$('#myModal').modal('hide');
 					$('#myForm')[0].reset();
 					if(response.type == 'add'){
 						var type = 'added'
-						$('alert-success').html('products'+type+'successfully').fadeIn().delay(4000).fadeOut('slow');
-					} else if (response.type == 'update') {
+					} 
+					else if (response.type == 'update')
+					{
 						var type = 'updated'
 					}
-					$('alert-success').html('products'+type+'successfully').fadeIn().delay(4000).fadeOut('slow');
-
 					showAllProducts();
+					$('.alert-success').html('Product added successfully').fadeIn().delay(4000).fadeOut('slow');
+
+				 
 				} else {
-					alert('error');
+					$('#myModal').modal('hide');
+					$('#myForm')[0].reset();
+					$('.alert-success').html('Product updated successfully').fadeIn().delay(4000).fadeOut('slow');
+					showAllProducts();
 				}
 			},
 			error:function(){
 					alert('Could not add data');
 					}
 				});
+
+
+
+			// socket.emit('add productname', $prodname.val());
+			// $prodname.val('');
+
+			// socket.emit('add price', $price.val());
+			// $price.val('');
+
+			// socket.emit('add quantity', $qty.val());
+			// $qty.val('');
+
+			// socket.emit('add category', $cat.val());
+			// $cat.val('');
+
+			// socket.emit('add photo', $photo.val());
+			// $photo.val('');
+
+			// socket.emit('add description', $desc.val());
+			// $desc.val('');
+
 			});
 		});
 
@@ -187,18 +245,23 @@
 
 
 		//edit
+
+
 		$('#showdata').on('click', '.item-edit', function(){
 			var id = $(this).attr('data');
 			$('#myModal').modal('show');
 			$('#myModal').find('.modal-title').text('Edit Product');
 			$('#myForm').attr('action', '<?php echo base_url();?>Products/updateProduct');
+			// $('#')
 			$.ajax({
 				type: 'ajax',
 				method: 'get',
 				url: '<?php echo base_url();?>Products/editProduct',
 				data: {id: id},
-				async: false,
-				dataType: 'json',
+				contentType:false,
+				cache:false,
+				async:false,
+				dataType:'json',
 				success: function(data){
 					$('input[name=product_name]').val(data.product_name);
 					$('input[name=price]').val(data.price);
@@ -265,10 +328,10 @@
 									'<td>'+data[i].product_name+'</td>'+
 									'<td>'+data[i].price+'</td>'+
 									'<td>'+data[i].quantity+'</td>'+	
-									'<td>'+
-										'<a href="javascript:;" class="btn btn-info item-edit" data="'+data[i].id+'">Edit</a>'+
+									'<td> <?php if($this->session->userdata('logged_in')) : ?>'+
+										'<button type="submit" href="javascript:;" class="btn btn-info item-edit" data="'+data[i].id+'">Edit</button>'+
 										'<a href="javascript:;" class="btn btn-danger item-delete" data="'+data[i].id+'">Delete</a><br>'+
-									'</td>'+
+									'</td><?php endif;?>'+
 							    '</tr>';
 					}
 					$('#showdata').html(html);
@@ -278,5 +341,12 @@
 				}
 			});
 		}
+	});
+</script>
+<script>
+	$(document).ready(function(){
+		 // var socket = io.connect();
+	  //    var server = socket.listen();
+	  //    var io = require('socket.io').listen(server);
 	});
 </script>

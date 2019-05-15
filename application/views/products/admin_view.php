@@ -81,6 +81,8 @@ h1 {
   height: 300px;
 }
 </style>
+
+<script src="script.js"></script>
 <?php if(!$this->session->userdata('logged_in')) : ?>
   <p class="alert alert-success">Please Log In to View Products</p>
 <?php endif; ?>

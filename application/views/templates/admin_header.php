@@ -6,12 +6,14 @@
       <script src="https://code.jquery.com/jquery-3.4.0.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
       <link rel="stylesheet" href="<?php base_url('assets/css/style.css'); ?>">
       <link rel="stylesheet" href="<?php base_url('assets/css/view_product.css');?>">
       <link rel="stylesheet" type="text/css" href="<?php base_url('assets/css/bootstrap-theme.min.css'); ?>">
       <script src="http://cdn.ckeditor.com/4.11.3/standard/ckeditor.js"></script>
       <link rel="stylesheet" href="<?php base_url('assets/css/view_product.css');?>">
+      <link rel="stylesheet" href="<?php base_url('assets/js/script.js');?>">
       
 </head>
 <body>

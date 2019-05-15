@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
 <style type="text/css">
 
 * {
@@ -10,7 +11,7 @@ body {
   font-family: Arial;
 }
 
-/* Center website */
+/*Center website*/
 .main {
   max-width: 1000px;
   margin: auto;
@@ -78,28 +79,78 @@ h1 {
   height: 300px;
 }
 </style>
+
 <?php if(!$this->session->userdata('logged_in')) : ?>
   <p class="alert alert-success">Please Log In to View Products</p>
 <?php endif; ?>
 		<h1><?= $title; ?></h1>
 		<p class="second-header"><strong>Find the product you desire</strong></p>
 
-<?php foreach ($products as $product) : ?>
-	<div class="container">
-  			<div class="column">
-    			<div class="content">
-      				<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/<?php echo $product['product_image']; ?>" style="width:100%">
-              <h2 class="h2" name="product_name"><?php echo $product['product_name']; ?></h1>
-              <h2 class="h2">₱ <?php echo $product['price']; ?> <br>
-    			</div>
-      			<br>
-            <?php if($this->session->userdata('logged_in')) : ?>
-            <a  href="<?php echo base_url('products/product_view/'.$product['id']); ?>"><button class="btn btn-block btn-primary" type="submit">View Product</button></a>
-              <?php endif; ?>
-            <br>
-  			</div>
-		</div>
-<?php endforeach; ?>
+    			<div class="container-content" id="showdata"> 
+
+          </div>
+<script>
+  $(function(){
+    showAllProducts();
+
+    var socket = io.connect('http://localhost:3000');
+    var $showdata = $('#showdata');
+
+    socket.on('new_product', function(data){
+      console.log(data);
+      $showdata.append('<div class = "container">'+
+                         '<div class = "column">'+
+                         '<div class ="content">'+
+                         '<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/'+data.data.photo+'" style="width:100%">'+
+                         '<h2 class="h2" name="product_name">'+data.data.product_name+'</h2>'+
+                         '<h2 class="h2">₱ '+data.data.price+'<br>'+
+                         '</div>'+
+                         '<br>'+
+                         '<?php if($this->session->userdata('logged_in')) : ?>'+
+                         '<a  href="<?php echo site_url();?>products/product_view/'+data.data.id+'"><button class="btn btn-block btn-primary" type="submit" id="viewProduct">View Product</button></a>'+
+                         '<?php endif; ?>'+
+                         '<br>'+
+                         '</div>'+
+                         '</div>')
+    });
+
+    function showAllProducts(){
+      $.ajax({
+        type: 'ajax',
+        url: '<?php echo base_url();?>Products/showAllProducts',
+        async: false,
+        dataType: 'json',
+        success: function(data){
+
+          var html = '';
+          var i;
+          for(i=0; i<data.length; i++){
+                  html+= '<div class = "container">'+
+                         '<div class = "column">'+
+                         '<div class ="content">'+
+                         '<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/'+data[i].product_image+'" style="width:100%">'+
+                         '<h2 class="h2" name="product_name">'+data[i].product_name+'</h2>'+
+                         '<h2 class="h2">₱ '+data[i].price+'<br>'+
+                         '</div>'+
+                         '<br>'+
+                         '<?php if($this->session->userdata('logged_in')) : ?>'+
+                         '<a  href="<?php echo site_url();?>products/product_view/'+data[i].id+'"><button class="btn btn-block btn-primary" type="submit" id="viewProduct">View Product</button></a>'+
+                         '<?php endif; ?>'+
+                         '<br>'+
+                         '</div>'+
+                         '</div>';
+          }
+          $('#showdata').html(html);
+        },
+        error: function(){
+          alert('Could not get Data from Database');
+        }
+      });
+    }
+});
+</script>
+
+
 
 <!-- value="<?php //echo $product['product_id'] ?>" -->
 

@@ -16,7 +16,42 @@ class Products extends CI_Controller{
 		$this->load->view('templates/footer');
 	}
 
+	public function checkoutCod(){
+
+		$result = $this->m->checkoutCod();
+		
+		$msg['success'] = false;
+		$msg['type'] = 'add';
+		if($result){
+			$msg['success'] = true;
+		}
+		echo json_encode($msg);
+	}
+
+	public function checkoutCd(){
+
+		$result = $this->m->checkoutCd();
+		
+		$msg['success'] = false;
+		$msg['type'] = 'add';
+		if($result){
+			$msg['success'] = true;
+		}
+		echo json_encode($msg);
+	}
+
 	public function updateProduct(){
+
+		$data = array(
+			'product_name' => $this->input->post('product_name'),
+			'price' => $this->input->post('price'),
+			'quantity' => $this->input->post('quantity'),
+			'category_id' => $this->input->post('category_id'),
+			'user_id' => $this->session->userdata('admin_id'),
+			'product_image' => $upload_image,
+			'description' => $this->input->post('description')
+		);
+
 		$result = $this->m->updateProduct();
 		$msg['success'] = false;
 		$msg['type'] = 'update';
@@ -26,7 +61,7 @@ class Products extends CI_Controller{
 		json_encode($msg);
 	}
 
-	public function ajax_upload()
+	public function addProduct()
 	{
 		if(isset($_FILES["image_file"]["name"]))
 		{
@@ -45,26 +80,34 @@ class Products extends CI_Controller{
 				$data = array('upload_data' => $this->upload->data());
 				$upload_image = $_FILES['image_file']['name'];
 			}
-				$result = $this->m->addProduct($upload_image);
-			$msg['success'] = false;	
-			$msg['type'] = 'add';
-			if($result){
-			$msg['success'] = true;
-		}
+
+			$result = $this->m->addProduct($upload_image);
+			$msg['success'] = false;
+			$msg['data'] = $result['data'];
+			$msg['updated_data'] = $result['updated_data']; 
+			// print_r($result);
+			if($result['status'] == 1){
+				$msg['success'] = true;
+				if($result['type'] == 1){
+				  $msg['type'] = 'add';
+				}else{
+					$msg['type'] = 'update';
+				}
+			}
 		echo json_encode($msg);
 		}
 	}
 
-	public function addProduct(){
+	// public function addProduct(){
 
-		$result = $this->m->addProduct();
-		$msg['success'] = false;
-		$msg['type'] = 'add';
-		if($result){
-			$msg['success'] = true;
-		}
-		echo json_encode($msg);
-	}
+	// 	$result = $this->m->addProduct();
+	// 	$msg['success'] = false;
+	// 	$msg['type'] = 'add';
+	// 	if($result){
+	// 		$msg['success'] = true;
+	// 	}
+	// 	echo json_encode($msg);
+	// }
 
 	public function editProduct(){
 		$result = $this->product_model->editProduct();
@@ -80,8 +123,22 @@ class Products extends CI_Controller{
 		echo json_encode($msg);
 	}
 
+	public function deleteCart(){
+		$result = $this->m->deleteCart();
+		$msg['success'] = false;
+		if($result){
+			$msg['success'] = true;
+		}
+		echo json_encode($msg);
+	}
+
 	public function showAllProducts(){
 		$result = $this->product_model->showAllProducts();
+		echo json_encode($result);
+	}
+
+	public function showAllCart(){
+		$result = $this->m->get_cart();
 		echo json_encode($result);
 	}
 
@@ -290,6 +347,12 @@ class Products extends CI_Controller{
 			$this->load->view('templates/header');
 			$this->load->view('products/index', $data);
 			$this->load->view('templates/footer');
+		}
+
+		public function get_total(){
+			$result = $this->m->get_total();
+
+			
 		}
 	}
 
