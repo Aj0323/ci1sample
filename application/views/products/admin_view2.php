@@ -154,7 +154,10 @@
 				dataType:'json',
 			success:function(response){
 				console.log(response);
-				var data_add = {
+				console.log(response.type);
+
+				if(response.data != null){
+				var data = {
 					'id' : response.data.id,
 					'product_name' : $prodname.val(), 
 					'price' : $price.val(), 
@@ -163,8 +166,19 @@
 					'photo' : response.data.img,
 					'description' : $desc.val()
 				}
+				socket.emit('add_product', data);
+				} else {
+					var data = {
+					'id' : $prod_id.val(),
+					'product_name' : $prodname.val(), 
+					'price' : $price.val(), 
+					'quantity' : $qty.val(),
+					'category' : $cat.val(),
+					'description' : $desc.val()
+					}
+				socket.emit('update_product', data);
+				}
 
-				socket.emit('add_product', data_add);	
 				if(response.success){
 					$('#myModal').modal('hide');
 					$('#myForm')[0].reset();
@@ -178,7 +192,7 @@
 					showAllProducts();
 					$('.alert-success').html('Product added successfully').fadeIn().delay(4000).fadeOut('slow');
 
-				 
+
 				} else {
 					$('#myModal').modal('hide');
 					$('#myForm')[0].reset();
@@ -213,6 +227,37 @@
 
 			});
 		});
+//delete- 
+		$('#showdata').on('click', '.item-delete', function(){
+			var id = $(this).attr('data');
+			$('#deleteModal').modal('show');
+			//prevent previous handler - unbind()
+			$('#btnDelete').unbind().click(function(){
+				$.ajax({
+					type: 'ajax',
+					method: 'get',
+					async: false,
+					url: '<?php echo base_url();?>Products/deleteProduct',
+					data:{id:id},
+					dataType: 'json',
+					success: function(response){
+						console.log('return');
+						if(response.success){
+							socket.emit('delete_product', response.data);
+							$('#deleteModal').modal('hide');
+							$('.alert-success').html('Product Deleted successfully').fadeIn().delay(4000).fadeOut('slow');
+							showAllProducts();
+						}else{
+							alert('Error');
+						}
+					},
+					error: function(){
+						alert('Error deleting');
+					}
+				});
+			});
+		});
+
 
 		// $('#btnSave').click(function(){
 			
@@ -274,36 +319,6 @@
 				error: function(){
 					alert('Could not Edit Data');
 				}
-			});
-		});
-
-
-		//delete- 
-		$('#showdata').on('click', '.item-delete', function(){
-			var id = $(this).attr('data');
-			$('#deleteModal').modal('show');
-			//prevent previous handler - unbind()
-			$('#btnDelete').unbind().click(function(){
-				$.ajax({
-					type: 'ajax',
-					method: 'get',
-					async: false,
-					url: '<?php echo base_url();?>Products/deleteProduct',
-					data:{id:id},
-					dataType: 'json',
-					success: function(response){
-						if(response.success){
-							$('#deleteModal').modal('hide');
-							$('.alert-success').html('Product Deleted successfully').fadeIn().delay(4000).fadeOut('slow');
-							showAllProducts();
-						}else{
-							alert('Error');
-						}
-					},
-					error: function(){
-						alert('Error deleting');
-					}
-				});
 			});
 		});
 

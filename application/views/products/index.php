@@ -100,10 +100,13 @@ h1 {
       console.log(data);
       $showdata.append('<div class = "container">'+
                          '<div class = "column">'+
-                         '<div class ="content">'+
+                         '<div class ="content" id="content-'+data.data.id+'">'+
+                         '<input type="hidden" id="product_id" value="'+data.data.id+'">'+
                          '<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/'+data.data.photo+'" style="width:100%">'+
-                         '<h2 class="h2" name="product_name">'+data.data.product_name+'</h2>'+
-                         '<h2 class="h2">₱ '+data.data.price+'<br>'+
+                         '<div id="info">'+
+                         '<h2 class="h2 prod_name" name="product_name" id="product_name">'+data.data.product_name+'</h2>'+
+                         '<h2 class="h2 prod_price" id="product_price">₱ '+data.data.price+'<br>'+
+                         '</div>'+
                          '</div>'+
                          '<br>'+
                          '<?php if($this->session->userdata('logged_in')) : ?>'+
@@ -112,6 +115,24 @@ h1 {
                          '<br>'+
                          '</div>'+
                          '</div>')
+    });
+
+    socket.on('new_update', function(update){
+      console.log(update);
+      $(`#content-${update.update.id}`).find('.prod_name').text(update.update.product_name)
+      $(`#content-${update.update.id}`).find('.prod_price').text(update.update.prod_price)
+      // $(`#content-${update.update.id}`).find('.prod_name').delay(4000).fadeOut('normal');
+      // $(`#content-${update.update.id}`).find('.prod_price').delay(4000).fadeOut('normal');
+      // $('.content').append(
+      //   '<h2 class="h2" name="product_name">'+update.update.product_name+'</h2>'+
+      //   '<h2 class="h2">₱ '+update.update.price+'<br>').find("#product_id");
+    });
+
+    socket.on('new_delete', function(del){
+      // console.log('del');
+      $(`#content-${del.del.id}`).find('.prod_name').fadeIn().delay(4000).fadeOut('normal');
+      $(`#content-${del.del.id}`).find('.prod_price').fadeIn().delay(4000).fadeOut('normal');
+      showAllProducts();
     });
 
     function showAllProducts(){
@@ -127,10 +148,13 @@ h1 {
           for(i=0; i<data.length; i++){
                   html+= '<div class = "container">'+
                          '<div class = "column">'+
-                         '<div class ="content">'+
+                         '<div class ="content" id="content-'+data[i].id+'">'+
+                         '<input type="hidden" id="product_id" value="'+data[i].id+'">'+
                          '<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/'+data[i].product_image+'" style="width:100%">'+
-                         '<h2 class="h2" name="product_name">'+data[i].product_name+'</h2>'+
-                         '<h2 class="h2">₱ '+data[i].price+'<br>'+
+                         '<div id="info">'+
+                         '<h2 class="h2 prod_name" name="product_name">'+data[i].product_name+'</h2>'+
+                         '<h2 class="h2 prod_price">₱ '+data[i].price+'<br>'+
+                         '</div>'+
                          '</div>'+
                          '<br>'+
                          '<?php if($this->session->userdata('logged_in')) : ?>'+

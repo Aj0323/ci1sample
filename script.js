@@ -35,6 +35,15 @@ socket.on('add_product', function(data){
      io.sockets.emit('new_product', {data: data});
 });
 
+socket.on('update_product', function(data){
+    console.log(data);
+    io.sockets.emit('new_update', {update: data});
+});
+
+socket.on('delete_product', function(data){
+    console.log(data);
+    io.sockets.emit('new_delete', {del: data});
+})
 // socket.on('add productname', function(data){
 //         console.log('[NAME] ', data);
 //         io.sockets.emit('new product', {prodname: data});

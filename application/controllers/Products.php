@@ -84,7 +84,6 @@ class Products extends CI_Controller{
 			$result = $this->m->addProduct($upload_image);
 			$msg['success'] = false;
 			$msg['data'] = $result['data'];
-			$msg['updated_data'] = $result['updated_data']; 
 			// print_r($result);
 			if($result['status'] == 1){
 				$msg['success'] = true;
@@ -117,8 +116,10 @@ class Products extends CI_Controller{
 	public function deleteProduct(){
 		$result = $this->m->deleteProduct();
 		$msg['success'] = false;
+		$msg['data'] = $result['data'];
 		if($result){
 			$msg['success'] = true;
+			$msg['data']= $result;		
 		}
 		echo json_encode($msg);
 	}

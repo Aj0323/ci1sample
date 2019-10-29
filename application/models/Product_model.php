@@ -44,7 +44,7 @@ class Product_model extends CI_Model{
 		}
 	}
 
-	public function updateProduct($upload_image){
+	public function updateProduct(){
 		$id = $this->input->post('id');
 		$data = array(
 			'product_name' => $this->input->post('product_name'),
@@ -52,7 +52,6 @@ class Product_model extends CI_Model{
 			'quantity' => $this->input->post('quantity'),
 			'category_id' => $this->input->post('category_id'),
 			'user_id' => $this->session->userdata('admin_id'),
-			'product_image' => $upload_image,
 			'description' => $this->input->post('description')
 		);
 		$this->db->where('id', $id);
@@ -76,11 +75,16 @@ class Product_model extends CI_Model{
 	}
 
 	public function deleteProduct(){
+		$rs = [];
 		$id = $this->input->get('id');
-		$this->db->where('id', $id);
-		$this->db->delete('products');
-		if($this->db->affected_rows() > 0){
-			return true;
+		$sql = $this->db->where('id', $id)
+				->delete('products');
+		if($sql){
+			$rs['id'] = $this->db->affected_rows();
+		
+			$res = [ 'data' => $rs ];
+
+			return $res;
 		}else{
 			return false;
 		}
@@ -139,18 +143,18 @@ class Product_model extends CI_Model{
 			$type = 1;
 			$rs['id'] = $this->db->insert_id();
 		} else {
+			$updated_id = $this->db->affected_rows();
 			$id = $this->input->get('id');
 				$data = array(
 				'product_name' => $this->input->post('product_name'),
 				'description' => $this->input->post('description'),
 				'price' => $this->input->post('price'),
-
 				'quantity' => $this->input->post('quantity')
 			);
 			$this->db->where('id', $this->input->post('id'));
 			$type=2;
 			return $this->db->update('products', $data);
-			
+
 		}
 		if($sql){
 			$status = 1;
@@ -159,6 +163,7 @@ class Product_model extends CI_Model{
 		$res = ['status' => $status, 'type' => $type, 'data' => $rs];
 
 		return $res;
+
 	}
 
 	public function get_product(){
