@@ -3,6 +3,7 @@ var mysql = require("mysql");
 var app = require("express")();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var fs = require('file-system');
 connections = [];
 
 var connection = mysql.createConnection({

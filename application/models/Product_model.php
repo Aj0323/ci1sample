@@ -132,7 +132,6 @@ class Product_model extends CI_Model{
 			'price' => $this->input->post('price'),
 			'quantity' => $this->input->post('quantity'),
 			'category_id' => $this->input->post('category_id'),
-			
 			'product_image' => $upload_image,
 			'description' => $this->input->post('description')
 		);
@@ -149,7 +148,9 @@ class Product_model extends CI_Model{
 				'product_name' => $this->input->post('product_name'),
 				'description' => $this->input->post('description'),
 				'price' => $this->input->post('price'),
-				'quantity' => $this->input->post('quantity')
+				'quantity' => $this->input->post('quantity'),
+				'category_id' => $this->input->post('category_id'),
+				'product_image' => $upload_image,
 			);
 			$this->db->where('id', $this->input->post('id'));
 			$type=2;

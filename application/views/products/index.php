@@ -27,7 +27,7 @@ h1 {
 }
 
 .h3{
-  font-size: 15px;
+  font-size: 20px;
 }
 
 .row {
@@ -56,7 +56,7 @@ h1 {
 
 /* Content */
 .content {
-  background-color: #00b77a;
+  background-color: #009fff;
   padding: 10px;
 }
 
@@ -102,10 +102,10 @@ h1 {
                          '<div class = "column">'+
                          '<div class ="content" id="content-'+data.data.id+'">'+
                          '<input type="hidden" id="product_id" value="'+data.data.id+'">'+
-                         '<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/'+data.data.photo+'" style="width:100%">'+
+                         '<img class="pic-thumb" id="product_photo" src="<?php echo site_url(); ?>assets/images/products/'+data.data.photo+'" style="width:100%">'+
                          '<div id="info">'+
                          '<h2 class="h2 prod_name" name="product_name" id="product_name">'+data.data.product_name+'</h2>'+
-                         '<h2 class="h2 prod_price" id="product_price">₱ '+data.data.price+'<br>'+
+                         '<h2 class="h3 prod_price" id="product_price">₱ '+data.data.price+'<br>'+
                          '</div>'+
                          '</div>'+
                          '<br>'+
@@ -117,10 +117,12 @@ h1 {
                          '</div>')
     });
 
+
     socket.on('new_update', function(update){
       console.log(update);
+      //$(`#content-${update.update.id}`).find('img').text(update.update.photo)
       $(`#content-${update.update.id}`).find('.prod_name').text(update.update.product_name)
-      $(`#content-${update.update.id}`).find('.prod_price').text(update.update.prod_price)
+      $(`#content-${update.update.id}`).find('.prod_price').text("₱" +" "+ update.update.price)
       // $(`#content-${update.update.id}`).find('.prod_name').delay(4000).fadeOut('normal');
       // $(`#content-${update.update.id}`).find('.prod_price').delay(4000).fadeOut('normal');
       // $('.content').append(
@@ -130,8 +132,8 @@ h1 {
 
     socket.on('new_delete', function(del){
       // console.log('del');
-      $(`#content-${del.del.id}`).find('.prod_name').fadeIn().delay(4000).fadeOut('normal');
-      $(`#content-${del.del.id}`).find('.prod_price').fadeIn().delay(4000).fadeOut('normal');
+      $(`#content-${del.del.id}`).find('.prod_name').fadeIn().delay(5000).fadeOut('normal');
+      $(`#content-${del.del.id}`).find('.prod_price').fadeIn().delay(5000).fadeOut('normal');
       showAllProducts();
     });
 
@@ -150,10 +152,10 @@ h1 {
                          '<div class = "column">'+
                          '<div class ="content" id="content-'+data[i].id+'">'+
                          '<input type="hidden" id="product_id" value="'+data[i].id+'">'+
-                         '<img class="pic-thumb" src="<?php echo site_url(); ?>assets/images/products/'+data[i].product_image+'" style="width:100%">'+
+                         '<img class="pic-thumb" id="product_photo" src="<?php echo site_url(); ?>assets/images/products/'+data[i].product_image+'" style="width:100%">'+
                          '<div id="info">'+
                          '<h2 class="h2 prod_name" name="product_name">'+data[i].product_name+'</h2>'+
-                         '<h2 class="h2 prod_price">₱ '+data[i].price+'<br>'+
+                         '<h2 class="h3 prod_price">₱ '+data[i].price+'<br>'+
                          '</div>'+
                          '</div>'+
                          '<br>'+

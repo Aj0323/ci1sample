@@ -42,8 +42,13 @@
       </div>
       <div class="modal-body">
         	<form id="myForm" action="" method="post" class="form-horizontal">
+			<div class="form-group">
+        			<label id="label_id" for="name" class="label-control col-md-4">Product ID</label>
+        			<div class="col-md-8">
+        				<input type="text" name="id" value="0" id="prod_id" class="form-control">
+        			</div>
+        		</div>
         		<div class="form-group">
-        			<input type="hidden" name="id" value="0" id="prod_id">
         			<label for="name" class="label-control col-md-4">Product Name</label>
         			<div class="col-md-8">
         				<input type="text" name="product_name" class="form-control" id="product_name">
@@ -132,6 +137,9 @@
 		$('#btnAdd').click(function(){
 			$('#myModal').modal('show');
 			$('#myModal').find('.modal-title').text('Add New Product');
+			$('#myForm')[0].reset();
+			$('#label_id').hide();
+			$('#prod_id').hide();
 		});
 
 		$('#closeForm').click(function(){
