@@ -4,7 +4,7 @@
   "description": "What is CodeIgniter ###################",
   "main": "script.js",
   "dependencies": {
-    "express": "^4.16.4",
+    "express": "^4.18.2",
     "mysql": "^2.17.1",
     "socket.io": "^2.2.0"
   },
